@@ -40,29 +40,48 @@ window.addEventListener('load',function()
         		       data=JSON.parse(ajaxObject.responseText);        		       
         		       
         		       var tableRef=document.querySelector("table");
+        		       row=document.createElement("tr");
+        		       
+        		       for(var innerpos in data[0])
+        		    	   {
+        		    	   console.log(innerpos)
+        		    	   col=document.createElement("th");
+  		    	    	    
+   	    	    		textNode=document.createTextNode(innerpos.toUpperCase());  
+  		    	    	    col.appendChild(textNode);
+  		    	    	    row.appendChild(col);
+        		    	   }
+    		    	  
+        		       tableRef.appendChild(row);
+        		       
         		       
         		       for(var pos in data)
         		    	   {
         		    	   
-        		    	      console.log(data[pos]);
+        		    	     // console.log(data[pos]);
         		    	      row=document.createElement("tr");
         		    	      for(var innerpos in data[pos])
         		    	    	  {
-        		    	    	    console.log(data[pos][innerpos]);
-        		    	    	    console.log(typeof(data[pos][innerpos]));
+        		    	    	    //console.log(data[pos][innerpos]);
+        		    	    	    //console.log(typeof(data[pos][innerpos]));
         		    	    	    if(typeof(data[pos][innerpos])=='object')
         		    	    	    	{
+        		    	    	    	var date="";
         		    	    	    	for(var innermost in data[pos][innerpos])
 			       		    	    	    	 {
-        		    	    	    		col=document.createElement("td");
-		           		    	    	    
-        		    	    	    		textNode=document.createTextNode(
-		           		    	    	    		data[pos][innerpos][innermost]);  
-		           		    	    	    col.appendChild(textNode);
-		           		    	    	    row.appendChild(col);
+        		    	    	    		       
+        		    	    	    		       if(innermost!='day')
+        		    	    	    		         date=date+data[pos][innerpos][innermost]+"/";
+        		    	    	    		       else
+        		    	    	    		    	   date=date+data[pos][innerpos][innermost];
 			       		    	    	    	 }      		    	    	    	
         		    	    	    	
-        		    	    	    	
+        		    	    	    	col=document.createElement("td");
+	           		    	    	    
+    		    	    	    		textNode=document.createTextNode(
+	           		    	    	    		date);  
+	           		    	    	    col.appendChild(textNode);
+	           		    	    	    row.appendChild(col);
         		    	    	    	}
         		    	    	    else
         		    	    	    	{       		    	    	    
