@@ -20,36 +20,40 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 public class WebMVCConfig implements WebMvcConfigurer{
 
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		// TODO Auto-generated method stub
-		//WebMvcConfigurer.super.addResourceHandlers(registry);
-		// Register resource handler for CSS and JS
-	      registry.addResourceHandler("/styles/**").addResourceLocations("/styles/")
-	            .setCacheControl(CacheControl.maxAge(2, TimeUnit.HOURS).cachePublic());
+	@Autowired
+	   private ApplicationContext applicationContext;	
+	/*
+	    * STEP 1 - Create SpringResourceTemplateResolver
+	    * */
+	   @Bean
+	   public SpringResourceTemplateResolver templateResolver() {
+	      SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+	      templateResolver.setApplicationContext(applicationContext);
+	      templateResolver.setPrefix("/views/");
+	      templateResolver.setSuffix(".html");
+	      return templateResolver;
+	   }
 
-	   // Register resource handler for CSS and JS
-	      registry.addResourceHandler("/scripts/**").addResourceLocations("/scripts/")
-	            .setCacheControl(CacheControl.maxAge(2, TimeUnit.HOURS).cachePublic());
-	      // Register resource handler for images
-	      registry.addResourceHandler("/images/**").addResourceLocations("/images/")
-	            .setCacheControl(CacheControl.maxAge(2, TimeUnit.HOURS).cachePublic());
-	}
+	   /*
+	    * STEP 2 - Create SpringTemplateEngine
+	    * */
+	   @Bean
+	   public SpringTemplateEngine templateEngine() {
+	      SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+	      templateEngine.setTemplateResolver(templateResolver());
+	      templateEngine.setEnableSpringELCompiler(true);
+	      return templateEngine;
+	   }
 
-	@Override
-	public void configureViewResolvers(ViewResolverRegistry registry) {
-		// TODO Auto-generated method stub
-		//WebMvcConfigurer.super.configureViewResolvers(registry);		
-		registry.jsp("/views/", ".jsp");
-	}
-
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		// TODO Auto-generated method stub
-		WebMvcConfigurer.super.addInterceptors(registry);
-		
-	}
-	
+	   /*
+	    * STEP 3 - Register ThymeleafViewResolver
+	    * */
+	   @Override
+	   public void configureViewResolvers(ViewResolverRegistry registry) {
+	      ThymeleafViewResolver resolver = new ThymeleafViewResolver();
+	      resolver.setTemplateEngine(templateEngine());
+	      registry.viewResolver(resolver);
+	   }
 	
 	
 
