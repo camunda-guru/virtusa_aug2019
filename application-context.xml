@@ -1,32 +1,46 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="
-        http://www.springframework.org/schema/beans     
-        http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/mvc 
-        http://www.springframework.org/schema/mvc/spring-mvc.xsd
-        http://www.springframework.org/schema/context 
-        http://www.springframework.org/schema/context/spring-context.xsd">
- 
-	<mvc:annotation-driven />
-	<context:component-scan
-		base-package="com.globalclaim.insurance.*" />
-	<mvc:default-servlet-handler />
- 
-	 <mvc:resources location="/views/" mapping="/views/**"  />
-	 <mvc:resources location="/images/" mapping="/images/**"/>
-	 <mvc:resources location="/styles/" mapping="/styles/**"/>
-	 <mvc:resources location="/scripts/" mapping="/scripts/**"/>
-  
- 
-	<bean id="viewResolver"
-		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
-		<property name="viewClass"
-			value="org.springframework.web.servlet.view.JstlView" />
-		<property name="prefix" value="/views/" />
-		<property name="suffix" value=".jsp" />
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+	
+	<context:annotation-config></context:annotation-config>
+	<context:component-scan base-package="com.virtusa.*"></context:component-scan>
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName"  value="oracle.jdbc.driver.OracleDriver">
+		</property>
+		<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"></property>
+		<property name="username" value="system"></property>
+		<property name="password" value="vignesh"></property>
 	</bean>
- 
+    <bean id="sessionFactory"	class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		
+		<property name="mappingResources">
+		<list>
+		<value>topic.hbm.xml</value>
+		</list>
+		</property>
+		
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.OracleDialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				
+			</props>
+		</property>
+	</bean>
+    <bean id="template" class="org.springframework.orm.hibernate5.HibernateTemplate">
+	<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+    <bean id="topic" class="com.virtusa.day12springhibernatedemo.models.Topic">
+    <property name="template" ref="template"></property>
+    
+    </bean>
+
+
 </beans>
